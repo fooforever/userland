@@ -82,7 +82,7 @@ struct mode_def
 	uint8_t image_id;
 	uint8_t data_lanes;
 	unsigned int min_vts;
-	float line_time;
+	int line_time_ns;
 };
 
 struct sensor_def
@@ -676,8 +676,8 @@ int main(int argc, const char** argv) {
 
 	if(cfg.exposure_us != -1)
 	{
-		cfg.exposure = (int)(cfg.exposure_us / sensor_mode->line_time);
-		vcos_log_error("Setting exposure to %d from time %d", cfg.exposure, cfg.exposure_us);
+		cfg.exposure = (int)(cfg.exposure_us * 1000 / sensor_mode->line_time_ns);
+		vcos_log_error("Setting exposure to %d from time %dus", cfg.exposure, cfg.exposure_us);
 	}
 
 	update_regs(sensor, sensor_mode, cfg.hflip, cfg.vflip, cfg.exposure, cfg.gain);
